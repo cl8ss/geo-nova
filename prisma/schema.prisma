@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum SensorStatus {
+  ONLINE
+  OFFLINE
+  MAINTENANCE
+}
+
+enum SensorType {
+  MULTI_GAS
+  AIR_QUALITY
+  TEMPERATURE
+  HUMIDITY
+}
+
+enum AlertSeverity {
+  INFO
+  WARNING
+  CRITICAL
+}
+
+enum AlertStatus {
+  ACTIVE
+  ACKNOWLEDGED
+  RESOLVED
+}
+
+model Country {
+  id        String   @id
+  name      String
+  iso2      String   @unique
+  iso3      String   @unique
+  latitude  Float
+  longitude Float
+  demo      Boolean  @default(true)
+  sites     Site[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Site {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  latitude    Float
+  longitude   Float
+  isDemo      Boolean  @default(true)
+  countryId   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  country     Country? @relation(fields: [countryId], references: [id], onDelete: SetNull)
+  sensors     Sensor[]
+  readings    Reading[]
+  alerts      Alert[]
+  @@index([countryId])
+}
+
+model Sensor {
+  id            String       @id @default(cuid())
+  siteId        String
+  name          String
+  location      String
+  type          SensorType
+  status        SensorStatus @default(ONLINE)
+  batteryLevel  Int          @default(100)
+  lastSeenAt    DateTime?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  site          Site         @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  readings      Reading[]
+  alerts        Alert[]
+  @@index([siteId])
+}
+
+model Reading {
+  id          String   @id @default(cuid())
+  siteId      String
+  sensorId    String
+  timestamp   DateTime @default(now())
+  temperature Float
+  humidity    Float
+  pm25        Float
+  pm10        Float
+  aqi         Int
+  co          Float
+  h2s         Float
+  voc         Float
+  isDemo      Boolean  @default(true)
+  site        Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  sensor      Sensor   @relation(fields: [sensorId], references: [id], onDelete: Cascade)
+  @@index([sensorId, timestamp])
+  @@index([siteId, timestamp])
+}
+
+model Alert {
+  id             String        @id @default(cuid())
+  siteId         String
+  sensorId       String
+  metric         String
+  title          String
+  description    String
+  severity       AlertSeverity
+  status         AlertStatus   @default(ACTIVE)
+  value          Float
+  threshold      Float
+  createdAt      DateTime      @default(now())
+  acknowledgedAt DateTime?
+  resolvedAt     DateTime?
+  isDemo         Boolean       @default(true)
+  site           Site          @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  sensor         Sensor        @relation(fields: [sensorId], references: [id], onDelete: Cascade)
+  @@index([siteId, status, createdAt])
+  @@index([sensorId, metric, status])
+}

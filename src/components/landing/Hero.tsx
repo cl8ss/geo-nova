@@ -1,0 +1,9 @@
+import { ArrowRight, Play, ShieldCheck, Sparkles } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+
+export function Hero() {
+  const { t } = useTranslation()
+
+  return <section className="hero-section page-width"><div className="hero-copy"><div className="pill-label"><span className="pill-pulse" />{t('landing.Intelligence for safer industry')}</div><h1>{t('landing.See the signals')}<br /><em>{t('landing.before they matter.')}</em></h1><p className="hero-lede">{t('landing.Geo Nova turns environmental data into clear, early action — giving industrial teams the confidence to protect people, operations, and the planet.')}</p><div className="hero-actions"><Link className="button-primary" to="/dashboard">{t('landing.Explore the dashboard')} <ArrowRight size={16} /></Link><a className="button-quiet" href="#platform"><span className="play-icon"><Play size={12} fill="currentColor" /></span> {t('landing.See how it works')}</a></div><div className="hero-proof"><div className="proof-avatars"><span>AM</span><span>JL</span><span>SK</span><span>+8</span></div><span>{t('landing.Built for the people')}<br />{t('landing.who keep industry moving.')}</span></div></div><div className="hero-visual"><div className="orbital orbital-one" /><div className="orbital orbital-two" /><div className="hero-orb"><div className="orb-shine" /><ShieldCheck size={22} /><span>Environment<br />within range</span><strong>94.8</strong><small>Safety score</small></div><div className="floating-card floating-top"><span className="mini-icon cyan"><Sparkles size={15} /></span><div><small>Live signal</small><strong>All systems clear</strong></div><span className="mini-live" /></div><div className="floating-card floating-bottom"><div className="mini-bars"><i /><i /><i /><i /><i /></div><div><small>Air quality trend</small><strong>Improving <b>+8.4%</b></strong></div></div><div className="hero-grid" /></div></section>
+}
