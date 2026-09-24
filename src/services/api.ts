@@ -105,7 +105,9 @@ export interface DashboardSummary {
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(path, { headers: { 'Content-Type': 'application/json' }, ...init })
+  const baseUrl = import.meta.env.VITE_API_BASE_URL
+  const url = baseUrl ? `${baseUrl}${path}` : path
+  const response = await fetch(url, { headers: { 'Content-Type': 'application/json' }, ...init })
   if (!response.ok) {
     const payload = await response.json().catch(() => null) as { error?: string } | null
     throw new Error(payload?.error ?? `Request failed with status ${response.status}`)
