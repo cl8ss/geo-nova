@@ -1,7 +1,7 @@
 import 'dotenv/config'
 
 export const config = {
-  port: Number(process.env.API_PORT ?? 3001),
+  port: Number(process.env.PORT ?? process.env.API_PORT ?? 3001),
   simulatorIntervalMs: Number(process.env.SIMULATOR_INTERVAL_MS ?? 10000),
 }
 

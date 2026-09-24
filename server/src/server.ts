@@ -6,7 +6,7 @@ import { startSimulator, stopSimulator } from './simulator'
 const app = await buildApp()
 
 try {
-  await app.listen({ host: '127.0.0.1', port: config.port })
+  await app.listen({ host: '0.0.0.0', port: config.port })
   startSimulator()
   app.log.info(`Geo Nova API listening on http://127.0.0.1:${config.port}`)
 } catch (error) {
